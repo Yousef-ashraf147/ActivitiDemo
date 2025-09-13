@@ -36,14 +36,14 @@ import java.util.stream.Collectors;
             taskService = processEngine.getTaskService();
             repositoryService = processEngine.getRepositoryService();
 
-            // Deploy the BPMN process
+
             repositoryService.createDeployment()
                     .addClasspathResource("handle-job-applicant.bpmn20.xml")
                     .deploy();
         }
 
     public String startProcess(JobApplicant applicant) {
-        // Store individual fields as process variables instead of the object
+
         Map<String, Object> variables = new HashMap<>();
         variables.put("name", applicant.getName());
         variables.put("email", applicant.getEmail());
@@ -51,15 +51,15 @@ import java.util.stream.Collectors;
 
         ProcessInstance processInstance =
                 runtimeService.startProcessInstanceByKey("handleJobApplicant", variables);
-        List<Task> tasks = taskService.createTaskQuery().list();
-        System.out.println("All tasks in engine: " + tasks.size());
-        tasks.forEach(t -> {
-            System.out.println("Task: " + t.getName());
-            taskService.getIdentityLinksForTask(t.getId())
-                    .forEach(link ->
-                            System.out.println("   type=" + link.getType()
-                                    + " group=" + link.getGroupId()));
-        });
+//        List<Task> tasks = taskService.createTaskQuery().list();
+//        System.out.println("All tasks in engine: " + tasks.size());
+//        tasks.forEach(t -> {
+//            System.out.println("Task: " + t.getName());
+//            taskService.getIdentityLinksForTask(t.getId())
+//                    .forEach(link ->
+//                            System.out.println("   type=" + link.getType()
+//                                    + " group=" + link.getGroupId()));}
+//        );
         return processInstance.getId();
     }
 
@@ -71,11 +71,11 @@ import java.util.stream.Collectors;
 
         if (task != null) {
             taskService.complete(task.getId());
-            List<TaskDto> engineeringTasks = getEngineeringTasks();
-            System.out.println("Heyy");
-            System.out.println("Engineering tasks: " + engineeringTasks.size());
-            engineeringTasks.forEach(t ->
-                    System.out.println("New task: " + t.getName() + " in process " + t.getProcessInstanceId()));
+//            List<TaskDto> engineeringTasks = getEngineeringTasks();
+//
+//            System.out.println("Engineering tasks: " + engineeringTasks.size());
+//            engineeringTasks.forEach(t ->
+//                    System.out.println("New task: " + t.getName() + " in process " + t.getProcessInstanceId()));
         }
     }
 
@@ -91,11 +91,11 @@ import java.util.stream.Collectors;
     }
 
     public JobApplicant getApplicant(String processInstanceId) {
-        // Reconstruct object from individual variables
+
         String name = (String) runtimeService.getVariable(processInstanceId, "name");
         String email = (String) runtimeService.getVariable(processInstanceId, "email");
         String position = (String) runtimeService.getVariable(processInstanceId, "position");
-        
+
 
         return new JobApplicant(name, email, position);
     }
